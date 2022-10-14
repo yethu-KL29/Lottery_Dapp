@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
  
 
-contract lottery {
+contract Lottery {
     address payable[] public players;
     address manager;
     address payable public winner;
@@ -18,7 +18,7 @@ contract lottery {
     }
 
     function getbalance() public view returns(uint){
-        require(manager==msg.sender,"u r not manager");
+        // require(manager==msg.sender,"u r not manager");
         return address(this).balance ;
     }
     function random(uint number) internal view returns(uint){
@@ -27,6 +27,7 @@ contract lottery {
     }
 
     function PickWinner() public {
+        // require(manager==msg.sender,"u r not manager");
         uint index = random(3);
         winner = players[index];
         winner.transfer(getbalance());
