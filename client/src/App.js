@@ -3,27 +3,35 @@ import getWeb3 from "./getWeb3";
 import Lottery from "./contracts/Lottery.json";
 import "./App.css";
 import Manager from "./components/Manager";
-
+import Players from "./components/Players";
+import {Route , Link} from "react-router-dom";
+import Intro from "./components/intro";
 const App = () => {
   const [state, setState] = useState({
     web3: null,
     contract: null,
   });
-
+  const [address, setaddress] = useState("0x8bDD07881E3161CFC87A9Bc86e17F93C1Df9c8D6");
   useEffect(() => {
     const init = async () => {
       try {
         const web3 = await getWeb3();
-         const networkId = await web3.eth.net.getId();
+        //  const networkId = await web3.eth.net.getId();
         
         const deployedNetwork ="0x0f42CA02b1D7E04fD1037c60CA461630788e4542";
         console.log("Contract Address:", deployedNetwork);
-       
+        
           const instance = new web3.eth.Contract(
           Lottery.abi,
-          deployedNetwork && deployedNetwork.address
+           deployedNetwork 
           
         );
+        
+        
+        
+        setaddress("0x8bDD07881E3161CFC87A9Bc86e17F93C1Df9c8D6");
+       
+        
         setState({ web3, contract: instance });
       } catch (error) {
         alert("Falied to load web3 or contract.");
@@ -34,10 +42,45 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
-      <div>Hello World</div>
-      <Manager state={state}></Manager>
-    </div>
-  );
+    <>
+    <nav className="navbar navbar-expand-lg navbar">
+      <div className="container-fluid">
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <Link to="/" className="nav-link navtext" aria-current="page">
+                Lottery System
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="/manager"
+                className="nav-link navtext"
+                aria-current="page"
+              >
+                Manger
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/players" className="nav-link navtext">
+                Player
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <Route exact path="/">
+      <Intro></Intro>
+    </Route>
+    <Route path="/manager">
+      <Manager state={state} />
+    </Route>
+    <Route path="/players">
+      <Players address={address} state={state} />
+    </Route>
+  </>
+);
 };
 export default App;
